@@ -6,7 +6,7 @@ library(vroom)
 
 library(data.table)
 url <- "https://opendata.ecdc.europa.eu/covid19/casedistribution/csv"
-#covid_data_dt <- fread(url)
+covid_data_dt <- fread(url)
 
-#class(covid_data_dt)
+class(covid_data_dt)
 ##  "data.table" "data.frame"
