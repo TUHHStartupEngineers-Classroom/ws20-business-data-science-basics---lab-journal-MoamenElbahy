@@ -1,20 +1,12 @@
-# Data Visualization
-
-## Challenge_2
-
-### importing libraries
-
 library(tidyverse)
 library(randomcoloR)
-
-### importing data
-
 covid_data_tbl <- read_csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv")
 View(covid_data_tbl)
 ylab=c(0,2.5,5,7.5,10,12.5,15,17.5)
 xlab=month.abb[1:12]
 continents=unique(covid_data_tbl$continentExp)
 
+#Group data
 grouped1 <- covid_data_tbl %>%
   select(month, cases, continentExp) %>%
   
@@ -25,6 +17,7 @@ grouped1 <- covid_data_tbl %>%
   ungroup() 
 colnames(grouped1)=c("month","continents","cases")
 
+#Add missing values
 grouped2=data.frame(continents=rep(continents,12),stringsAsFactors = F)
 grouped2=grouped2[order(grouped2$continents),]
 grouped2=as.data.frame(cbind(grouped2,rep(1:12,length(continents))))
@@ -32,6 +25,7 @@ colnames(grouped2)=c("continents","month")
 grouped2=merge.data.frame(grouped2,grouped1,all=T)
 grouped2[is.na(grouped2)]=0
 
+#Calculate Cumulative Cases
 grouped3<- grouped2%>%
   select(month, cases, continents) %>%
   
@@ -41,11 +35,12 @@ grouped3<- grouped2%>%
   ) %>%
   select(cumulativeCases, continents) %>%
   ungroup()
+#Add month column
 grouped3=as.data.frame(cbind(grouped3,rep(1:12,length(continents))))
 colnames(grouped3)=c("cumulativeCases","continents","month")
 View(grouped3)
 
-### Plotting
+#Canvas
 ggplot(data=grouped3,
        aes(x=month,y=cumulativeCases,col=continents),group=continents)+
   geom_line()+
