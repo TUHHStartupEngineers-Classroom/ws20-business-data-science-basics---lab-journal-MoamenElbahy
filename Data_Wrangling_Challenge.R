@@ -1,18 +1,14 @@
-#Patents analysis ----
-setwd("D:/Mechatronics_master/Third semester/Data science/DS_101/DS_101/01_getting_started/Patent_data_reduced/")
-# Importing data: ---- 
+# Data Wrangling: Challenge
+
+## Importing Libraries 
 library(vroom)
-# Tidyverse
 library(tidyverse)
-
-# Data Table
 library(data.table)
-
-# Counter
 library(tictoc)
-# 2.0 DATA IMPORT ----
 
-# Patents: ----
+## DATA IMPORT 
+
+### Patents:
 
 col_types <- list(
   id = col_character(),
@@ -30,7 +26,7 @@ patent_tbl <- vroom(
 
 
 #Assignee_id = id,
-# Assignee: ----
+### Assignee:
 
 col_types_assignee <- list(
   id = col_character(),
@@ -46,7 +42,7 @@ assignee_tbl <- vroom(
 )
 
 
-# Patent assignee: ----
+### Patent assignee:
 
 col_types_patent_assignee <- list(
   patent_id = col_character(),
@@ -76,7 +72,7 @@ uspc_tbl <- vroom(
 )
 
 
-# 3.1 Acquisition Data ----
+### Converts to tables
 
 setDT(assignee_tbl)
 setDT(patent_tbl)
@@ -88,22 +84,10 @@ assignee_tbl %>% glimpse()
 patent_assignee_tbl %>% glimpse()
 uspc_tbl %>% glimpse()
 
-
-# 4.0 DATA WRANGLING ----
-
-# Target type = 2
-
-
-# Start the analysis ----
-#########################################################################
-# Q1.Patent Dominance: What US company / corporation has the most patents? 
-# List the 10 US companies with the most assigned/granted patents.
-## Output: 
-#########################################################################
-
-# 4.1 summarize and count:
-
-
+### analysis
+ 
+#### Patent Dominance: What US company / corporation has the most patents? List the 10 US companies with the most assigned/granted patents.
+##### Answer:
 
 setnames(assignee_tbl, "id", "assignee_id")
 
@@ -123,11 +107,8 @@ us_patents <- combined_data %>%
 us_top_10 <- us_patents %>% slice(1:10)
 
 
-#########################################################################
-# Q2. Recent patent acitivity: What US company had the most patents granted in 2019? 
-#List the top 10 companies with the most new granted patents for 2019.
-#########################################################################
-
+#### Recent patent acitivity: What US company had the most patents granted in 2019? List the top 10 companies with the most new granted patents for 2019.
+##### Answer:
 
 tbl_2 <- patent_tbl %>%   
          separate(col  = date,
@@ -160,24 +141,10 @@ us_top10_2014_01_new <- combined_data_2%>%
                         summarise(total_patents = sum(n))%>%
                         arrange(desc(total_patents)) %>% slice(1:10)
                   
- #########################################################################
-# Q. Innovation in Tech: What is the most innovative tech sector? --->
-# What is the most innovative tech sector? For the top 10 companies (worldwide)
-# with the most patents, what are the top 5 USPTO tech main classes?
-#########################################################################
-
-### Patent Dominance: What US company / Corporation has the most patents? 
-### List the 10 US companies with the most assigned/granted patents.
-
-### Recent patent acitivity: What US company had the most patents granted in 2019? 
-### List the top 10 companies with the most new granted patents for 2019.
-
-### Innovation in Tech: What is the most innovative tech sector?
-### For the top 10 companies (worldwide) with the most patents, what are the top 5 USPTO tech main classes?
+#### Innovation in Tech: What is the most innovative tech sector? What is the most innovative tech sector? For the top 10 companies (worldwide) with the most patents, what are the top 5 USPTO tech main classes?
+##### Answer:
 
 combined_data_3 <- merge(x = uspc_tbl, y = combined_data_2, by = "patent_id")
-
-
 
 top10_worlwide_patents <- combined_data_3  %>%
                   filter(!is.na(patent_id) || !is.na(organization))%>%
@@ -189,12 +156,4 @@ top10_worlwide_patents <- combined_data_3  %>%
                   ungroup() %>%
                   arrange(desc(total_patents_wordwide)) %>% slice(1:10)  
 
-top10_worlwid_top5_upts_ <- top10_worlwide %>% slice(1:5)  
-
-
-
-
-
-
-
-
+top10_worlwid_top5_upts_ <- top10_worlwide %>% slice(1:5)

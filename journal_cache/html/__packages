@@ -29,3 +29,6 @@ ggmap
 mapdata
 usethis
 devtools
+vroom
+data.table
+tictoc
