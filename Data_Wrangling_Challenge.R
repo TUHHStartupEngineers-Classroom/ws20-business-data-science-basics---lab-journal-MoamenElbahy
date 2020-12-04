@@ -1,15 +1,18 @@
 # Data Wrangling: Challenge
 
-## Importing Libraries 
+## Importing Libraries
+```{r}
 library(vroom)
 library(tidyverse)
 library(data.table)
 library(tictoc)
+```
 
-## DATA IMPORT 
+## DATA IMPORT
 
 ### Patents:
 
+```{r}
 col_types <- list(
   id = col_character(),
   date = col_date("%Y-%m-%d"),
@@ -17,17 +20,17 @@ col_types <- list(
 )
 
 patent_tbl <- vroom(
-  file       = "patent.tsv", 
-  delim      = "\t", 
+  file       = "patent.tsv",
+  delim      = "\t",
   col_types  = col_types,
   na         = c("", "NA", "NULL")
 )
-
-
+```
 
 #Assignee_id = id,
 ### Assignee:
 
+```{r}
 col_types_assignee <- list(
   id = col_character(),
   type = col_character(),
@@ -35,15 +38,17 @@ col_types_assignee <- list(
 )
 
 assignee_tbl <- vroom(
-  file       = "assignee.tsv", 
-  delim      = "\t", 
+  file       = "assignee.tsv",
+  delim      = "\t",
   col_types  = col_types_assignee,
   na         = c("", "NA", "NULL")
 )
+```
 
 
 ### Patent assignee:
 
+```{r}
 col_types_patent_assignee <- list(
   patent_id = col_character(),
   assignee_id = col_character()
@@ -51,8 +56,8 @@ col_types_patent_assignee <- list(
 
 
 patent_assignee_tbl <- vroom(
-  file       = "patent_assignee.tsv", 
-  delim      = "\t", 
+  file       = "patent_assignee.tsv",
+  delim      = "\t",
   col_types  = col_types_patent_assignee,
   na         = c("", "NA", "NULL")
 )
@@ -65,15 +70,15 @@ col_types_uspc <- list(
 
 
 uspc_tbl <- vroom(
-  file       = "uspc.tsv", 
-  delim      = "\t", 
+  file       = "uspc.tsv",
+  delim      = "\t",
   col_types  = col_types_uspc,
   na         = c("", "NA", "NULL")
 )
-
+```
 
 ### Converts to tables
-
+```{r}
 setDT(assignee_tbl)
 setDT(patent_tbl)
 setDT(patent_assignee_tbl)
@@ -83,12 +88,15 @@ patent_tbl %>% glimpse()
 assignee_tbl %>% glimpse()
 patent_assignee_tbl %>% glimpse()
 uspc_tbl %>% glimpse()
+```
+
 
 ### analysis
- 
+
 #### Patent Dominance: What US company / corporation has the most patents? List the 10 US companies with the most assigned/granted patents.
 ##### Answer:
 
+```{r}
 setnames(assignee_tbl, "id", "assignee_id")
 
 combined_data <- merge(x = patent_assignee_tbl, y = assignee_tbl, by = "assignee_id")
@@ -97,20 +105,21 @@ combined_data <- merge(x = patent_assignee_tbl, y = assignee_tbl, by = "assignee
 us_patents <- combined_data %>%
   filter(type == 2)%>%
   filter(!is.na(patent_id) || !is.na(organization)) %>%
-  select(-type, -assignee_id)%>% 
+  select(-type, -assignee_id)%>%
   group_by(organization) %>%
   count(patent_id) %>%
   select(-patent_id)%>%
   summarise(total = sum(n))%>%
-  arrange(desc(total))   
+  arrange(desc(total))
 
 us_top_10 <- us_patents %>% slice(1:10)
-
+```
 
 #### Recent patent acitivity: What US company had the most patents granted in 2019? List the top 10 companies with the most new granted patents for 2019.
 ##### Answer:
 
-tbl_2 <- patent_tbl %>%   
+```{r}
+tbl_2 <- patent_tbl %>%
          separate(col  = date,
          into = c("year", "month", "day"),
           sep  = "-", remove = TRUE) %>%
@@ -128,32 +137,36 @@ us_top10_2014_01 <- combined_data_2%>%
                     filter(!is.na(patent_id) || !is.na(organization)) %>%
                     select(organization, patent_id) %>%
                     group_by(organization) %>%
-                    count(patent_id) %>%   
+                    count(patent_id) %>%
                     summarise(total_patents = sum(n))%>%
-                    arrange(desc(total_patents)) %>% slice(1:10)  
+                    arrange(desc(total_patents)) %>% slice(1:10)
 
 us_top10_2014_01_new <- combined_data_2%>%
                         filter(type == 2 & num_claims == 1)%>%
                         filter(!is.na(patent_id) || !is.na(organization)) %>%
                         select(organization, patent_id) %>%
                         group_by(organization) %>%
-                        count(patent_id) %>%   
+                        count(patent_id) %>%
                         summarise(total_patents = sum(n))%>%
                         arrange(desc(total_patents)) %>% slice(1:10)
-                  
+```
+
+
 #### Innovation in Tech: What is the most innovative tech sector? What is the most innovative tech sector? For the top 10 companies (worldwide) with the most patents, what are the top 5 USPTO tech main classes?
 ##### Answer:
 
+```{r}
 combined_data_3 <- merge(x = uspc_tbl, y = combined_data_2, by = "patent_id")
 
-top10_worlwide_patents <- combined_data_3  %>%
+top10_worldwide_patents <- combined_data_3  %>%
                   filter(!is.na(patent_id) || !is.na(organization))%>%
                   group_by(organization) %>%
-                  arrange(desc(mainclass_id)) %>% # set mainclass order first, the result will be sorted automatically 
+                  arrange(desc(mainclass_id)) %>%
                   count(patent_id) %>%
                   select(-patent_id)%>%
                   summarise(total_patents_wordwide = sum(n))%>%
                   ungroup() %>%
-                  arrange(desc(total_patents_wordwide)) %>% slice(1:10)  
+                  arrange(desc(total_patents_wordwide)) %>% slice(1:10)
 
-top10_worlwid_top5_upts_ <- top10_worlwide %>% slice(1:5)
+top10_worldwide_top5_upts_ <- top10_worldwide_patents %>% slice(1:5)
+```
