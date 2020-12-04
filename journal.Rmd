@@ -27,7 +27,6 @@ library("writexl")
 ```
 ## importing data
 ```{r}
-setwd("D:/TUHH/Current_SEMESTER/DataScience/ws20-business-data-science-basics---lab-journal-MoamenElbahy-master")
 
 bikes_tbl <- readxl:: read_excel(path = "DS_101/00_data/01_bike_sales/01_raw_data/bikes.xlsx")
 
@@ -263,4 +262,3 @@ saveRDS(bike_tableout,"Data_Acquisition_Challenge.rds")
 
 
 ```
-xcode-select --install
