@@ -38,12 +38,17 @@ bikeshops_tbl  <- readxl::read_excel("DS_101/00_data/01_bike_sales/01_raw_data/b
 
 ## Examining Data 
 
+### Orderlines Table(orderlines_tbl):
 ```{r}
 orderlines_tbl
+```
+### glimpse(orderlines_tbl):
+```{r}
 glimpse(orderlines_tbl)
 ```
 
 ## Joining Data
+### Orderlines Table & Bikes Table joined data by the product id & bike id:
 ```{r}
 
 left_join(orderlines_tbl, bikes_tbl, by = c("product.id" = "bike.id"))
@@ -242,6 +247,8 @@ Alexandria_EG_forecast[, 1:10]
 
 
 ## Task(2)
+
+### Bike data table:
 
 ```{r}
 #Wrap it into a function
@@ -459,7 +466,7 @@ top10_worldwide_top5_upts
 
 # Data Visualization: Challenge
 
-## Challenge(1)
+## Challenge(1): The time course of the cumulative Covid-19 cases Map
 
 ### importing libraries
 
@@ -540,7 +547,7 @@ ggplot(data=grouped3,
 ```
 
 
-## Challenge(2)
+## Challenge(2): The distribution of the mortality rate (deaths / population)
 
 ### importing libraries
 
