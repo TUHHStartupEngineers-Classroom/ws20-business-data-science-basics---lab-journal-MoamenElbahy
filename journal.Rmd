@@ -208,7 +208,9 @@ library(tibble)
 
 ```
 
-## Task_1
+## Task(1): Getting some data via an API
+
+### Current Weather Data API of London
 
 ```{r}
 
@@ -216,23 +218,30 @@ resp = GET("http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=a1e
 
 rawToChar(resp$content)
 
-content(resp, as = "text")
-
-# first of all you have to set up your api key
 OWM_API_KEY="a1e8fec679a9d4e32d525dc165c0af27"
 owmr_settings(OWM_API_KEY)
+```
+
+### Weather Data of Alexandria, Egypt
+
+#### Current Weather Data API
+
+```{r}
 
 (Alexandria_Egypt <- search_city_list("Alexandria","EG")) %>%
   as.list()
+```
 
+#### The forecast updates API
+```{r}
 Alexandria_EG_forecast <- get_forecast("London", units = "metric") %>%
   owmr_as_tibble()
 
 Alexandria_EG_forecast[, 1:10]
-
 ```
 
-## Task_2
+
+## Task(2)
 
 ```{r}
 #Wrap it into a function
