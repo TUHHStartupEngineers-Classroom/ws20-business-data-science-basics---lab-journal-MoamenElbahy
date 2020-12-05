@@ -273,7 +273,7 @@ library(data.table)
 library(tictoc)
 ```
 
-## DATA IMPORT
+## Importing Data
 
 ### Patents:
 
@@ -345,7 +345,7 @@ uspc_tbl <- vroom(
 uspc_tbl
 ```
 
-### Converts to tables
+### Converting to tables
 ```{r}
 setDT(patent_tbl)
 
@@ -359,11 +359,11 @@ setDT(uspc_tbl)
 ```
 
 
-### analysis
+## analysis
 
-#### Question (1) : Patent Dominance: What US company / corporation has the most patents? 
+### Question (1) : Patent Dominance: What US company / corporation has the most patents? 
 
-##### Answer:
+#### Answer:
 
 ```{r}
 setnames(assignee_tbl, "id", "assignee_id")
@@ -385,9 +385,9 @@ us_top_10 <- us_patents %>% slice(1:10)
 us_top_10
 ```
 
-#### Question (2): Recent patent acitivity: What US company had the most patents granted in 2019? 
+### Question (2): Recent patent acitivity: What US company had the most patents granted in 2019? 
 
-##### Answer:
+#### Answer:
 
 ```{r}
 tbl_2 <- patent_tbl %>%
@@ -425,9 +425,9 @@ us_top10_2014_01_new
 ```
 
 
-#### Question (3): Innovation in Tech: What is the most innovative tech sector?
+### Question (3): Innovation in Tech: What is the most innovative tech sector?
 
-##### Answer:
+#### Answer:
 
 ```{r}
 combined_data_3 <- merge(x = uspc_tbl, y = combined_data_2, by = "patent_id")
@@ -581,7 +581,7 @@ world <- map_data("world")
 ggplot() +
   geom_map(
     data = world, map = world,
-    aes(long, lat, map_id = region) ,color = "black", fill = "lightgray", size = 0.1
+    aes(long, lat, map_id = region) ,color = "white", fill = "black", size = 0.3
   ) 
 
 covid_world_mortality_rate_countries_tbl<-world%>%
